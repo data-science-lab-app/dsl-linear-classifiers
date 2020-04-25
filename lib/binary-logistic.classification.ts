@@ -1,4 +1,5 @@
 import { AlgorithmPlugin, PluginOptions, PluginInputs, Option, CheckboxOption, RecorderService, PluginData, PluginDataInput, Matrix, NumberOption } from 'data-science-lab-core';
+import { sigmoid, subtract, log } from './classification.helpers';
 
 interface BinaryLogisticClassificationInput {
     regularization: boolean;
@@ -78,27 +79,10 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
         return false;
     }
 
-    sigmoid(m: Matrix.Matrix): Matrix.Matrix {
-        return Matrix.map(Matrix.multiply(m, -1.0), (value) => {
-            return 1.0 / (1.0 + Math.exp(value));
-        });
-    }
-
-    log(m: Matrix.Matrix): Matrix.Matrix {
-        return Matrix.map(m, (value) => {
-            return Math.log(value);
-        })
-    }
-
-    subt(lhs: number, m: Matrix.Matrix): Matrix.Matrix {
-        return Matrix.map(m, (value) => {
-            return lhs - value;
-        });
-    }
 
     test(argument: {
         [id: string]: any[];
-    }): any[] {
+    }): {[id: string]: any[]} {
         const argumentInput = argument['input'] as number[];
         let input = Matrix.construct(1, this.n, (row, column) => {
             if (column === 0) {
@@ -110,7 +94,9 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
         const h = this.computeH(input);
 
         const answer = h.data[0][0];
-        return [answer > this.data.threshold ? 1 : 0];
+        return {
+            'output': [answer > this.data.threshold ? 1 : 0] 
+        }
     }
 
     async step(): Promise<void> {
@@ -120,7 +106,6 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
         const cost = this.computeCost(h) + theata_reg; 
 
         const gradient = this.computeGradient(h);
-
         
         this.data.theta = Matrix.subtract(this.data.theta, Matrix.multiply(gradient, this.data.learningRate)); 
 
@@ -128,13 +113,13 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
             {
                 label: 'Cost',
                 value: cost,
-                description: "The average difference between expected and actaul output"
+                description: "The average difference between expected and actual output"
             },
         ])
     }
 
     computeH(input: Matrix.Matrix): Matrix.Matrix {
-        return this.sigmoid(Matrix.multiply(input, this.data.theta));
+        return sigmoid(Matrix.multiply(input, this.data.theta));
     }
 
     computeGradient(h: Matrix.Matrix): Matrix.Matrix {
@@ -143,7 +128,7 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
 
         if (this.data.regularization) {
             const coefficient = this.data.lambda / this.m;
-            return Matrix.map(gradient, (value, row, column) => {
+            return Matrix.map(gradient, (value, row, _) => {
                 if (row === 0) {
                     return value;
                 } else {
@@ -155,8 +140,8 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
     }
 
     computeCost(h: Matrix.Matrix): number {
-        const lhs = Matrix.columnMultiply(Matrix.multiply(this.data.output, -1.0), this.log(h));
-        const rhs = Matrix.columnMultiply(this.subt(1.0, this.data.output), this.log(this.subt(1, h)));
+        const lhs = Matrix.columnMultiply(Matrix.multiply(this.data.output, -1.0), log(h));
+        const rhs = Matrix.columnMultiply(subtract(1.0, this.data.output), log(subtract(1, h)));
 
         let temp = Matrix.sum(Matrix.subtract(lhs, rhs));
 

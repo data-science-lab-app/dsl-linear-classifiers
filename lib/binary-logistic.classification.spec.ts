@@ -113,41 +113,6 @@ describe('Binary Logistic Classification Tests', () => {
         }
     });
 
-    it('sigmoid function should perform sigmod on each value', () => {
-        const output = algorithm.sigmoid(Matrix.make([[1, 2], [3, 4]]));
-        expect(output).toEqual({
-            rows: 2,
-            columns: 2,
-            data: [
-                [1.0 / (1.0 + Math.exp(-1)), 1.0 / (1.0 + Math.exp(-2))],
-                [1.0 / (1.0 + Math.exp(-3)), 1.0 / (1.0 + Math.exp(-4))]]
-        });
-    });
-
-    it('log function should perform log on each value', () => {
-        const output = algorithm.log(Matrix.make([[1, 2], [3, 4]]));
-        expect(output).toEqual({
-            rows: 2,
-            columns: 2,
-            data: [
-                [Math.log(1), Math.log(2)],
-                [Math.log(3), Math.log(4)],
-            ]
-        });
-    });
-
-    it('subt function should perform subtraction on each value', () => {
-        const output = algorithm.subt(1, Matrix.make([[1, 2], [3, 4]]));
-        expect(output).toEqual({
-            rows: 2,
-            columns: 2,
-            data: [
-                [0, -1],
-                [-2, -3],
-            ]
-        });
-    });
-
     it('options should retrun false for no more', () => {
         expect(algorithm.getOptions().noMore()).toBeFalsy();
     });
@@ -256,8 +221,8 @@ describe('Binary Logistic Classification Tests', () => {
         for (let i = 0; i < testingInput.output.examples.length; ++i) {
             const actual = algorithm.test(
                 { 'input': testingInput.input.examples[i] }
-            );
-            expect(actual).toEqual(testingInput.output.examples[i]);
+            );  
+            expect(actual.output).toEqual(testingInput.output.examples[i]);
         }
     });
 
@@ -278,7 +243,7 @@ describe('Binary Logistic Classification Tests', () => {
             const actual = newAlgorithm.test(
                 { 'input': testingInput.input.examples[i] }
             );
-            expect(actual).toEqual(testingInput.output.examples[i]);
+            expect(actual.output).toEqual(testingInput.output.examples[i]);
         }
     });
 
