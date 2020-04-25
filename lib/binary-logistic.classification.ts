@@ -42,6 +42,7 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
                 threshold: this.data.threshold,
                 theta: this.data.theta,
                 m: this.data.m,
+                n: this.data.n
             })
         } else {
             return JSON.stringify(this.data); 
@@ -51,9 +52,10 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
     import(json: string, minimal: boolean): BinaryLogisticClassification {
         const data = JSON.parse(json) as BinaryLogisticClassificationInput;
         if (minimal) {
-            this.data.m = data.m;
-            this.data.theta = data.theta;
             this.data.threshold = data.threshold;
+            this.data.theta = data.theta;
+            this.data.m = data.m;
+            this.data.n = data.n;
         } else {
             this.data = data;
         }
@@ -98,9 +100,9 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
         [id: string]: any[];
     }): any[] {
         const argumentInput = argument['input'] as number[];
-        let input = Matrix.construct(1, this.m, (row, column) => {
+        let input = Matrix.construct(1, this.n, (row, column) => {
             if (column === 0) {
-                return 0;
+                return 1;
             }
             return argumentInput[column - 1];
         });

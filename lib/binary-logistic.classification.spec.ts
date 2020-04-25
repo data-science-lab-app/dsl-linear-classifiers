@@ -1,5 +1,5 @@
 import { BinaryLogisticClassification } from "./binary-logistic.classification";
-import { Matrix } from "data-science-lab-core";
+import { Matrix, AlgorithmPlugin } from "data-science-lab-core";
 
 
 describe('Binary Logistic Classification Tests', () => {
@@ -224,6 +224,64 @@ describe('Binary Logistic Classification Tests', () => {
         })
     });
 
+    it('export and import without minimial should be able to train', async () => {
+        algorithm.getInputs().submit(testingInput);
+        algorithm.getOptions().submit({
+            'regularization': false,
+            'threshold': 0.5,
+            'learningRate': 0.001
+        });
+        algorithm.initialize();
+        const json = algorithm.export(false);
+        let newAlgorithm = (new BinaryLogisticClassification()).import(json, false);
+        const initial = newAlgorithm.computeCost(newAlgorithm.computeH(newAlgorithm.data.input));
+        for (let i = 0; i < 1000; ++i) {
+            await newAlgorithm.step();
+        }
+        const afterwards = newAlgorithm.computeCost(newAlgorithm.computeH(newAlgorithm.data.input));
+        expect(afterwards).toBeLessThan(initial);
+    });
+
+    it('testing should get all right', async () => {
+        algorithm.getInputs().submit(testingInput);
+        algorithm.getOptions().submit({
+            'regularization': false,
+            'threshold': 0.5,
+            'learningRate': 0.001
+        });
+        algorithm.initialize();
+        for (let i = 0; i < 100000; ++i) {
+            await algorithm.step();
+        }
+        for (let i = 0; i < testingInput.output.examples.length; ++i) {
+            const actual = algorithm.test(
+                { 'input': testingInput.input.examples[i] }
+            );
+            expect(actual).toEqual(testingInput.output.examples[i]);
+        }
+    });
+
+    it('testing about export minimal should still work', async () => {
+        algorithm.getInputs().submit(testingInput);
+        algorithm.getOptions().submit({
+            'regularization': false,
+            'threshold': 0.5,
+            'learningRate': 0.001
+        });
+        algorithm.initialize();
+        for (let i = 0; i < 100000; ++i) {
+            await algorithm.step();
+        } 
+        const json = algorithm.export(true);
+        let newAlgorithm = (new BinaryLogisticClassification()).import(json, true);
+        for (let i = 0; i < testingInput.output.examples.length; ++i) {
+            const actual = newAlgorithm.test(
+                { 'input': testingInput.input.examples[i] }
+            );
+            expect(actual).toEqual(testingInput.output.examples[i]);
+        }
+    });
+
     describe('after initialize without regularization', () => {
 
         beforeEach(() => {
@@ -395,5 +453,7 @@ describe('Binary Logistic Classification Tests', () => {
             expect(afterwards).toBeLessThan(initial);
         });
     });
+
+
 
 });
