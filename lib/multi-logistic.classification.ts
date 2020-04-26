@@ -52,18 +52,18 @@ export class MultiLogisticClassification extends AlgorithmPlugin {
         }
     }
 
-    import(json: string, minimal: boolean): MultiLogisticClassification {
+    import(json: string, _: boolean): MultiLogisticClassification {
         const data = JSON.parse(json) as MultiLogisticClassificationInput;
-        if (minimal) {
-            this.data.threshold = data.threshold;
-            this.data.thetas = data.thetas;
-            this.data.labels = data.labels;
-            this.data.m = data.m;
-            this.data.n = data.n;
-        } else {
-            this.data = data;
-        }
+        this.data = data;
         return this;
+    }
+
+    getInputs() {
+        return this.inputs;
+    }
+
+    getOptions() {
+        return this.options;
     }
 
     setInput(pluginData: number[][]) {
@@ -329,6 +329,7 @@ class MultiLogisticClassificationPluginOptions extends PluginOptions {
                 break;
             case 4:
                 if (id === 'yes') {
+                    this.classifier.setLabels(this.labels);
                     this.state = 6;
                 } else if (id === 'no') {
                     this.state = 5;
