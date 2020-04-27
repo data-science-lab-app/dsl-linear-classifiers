@@ -1,5 +1,4 @@
 import { BinaryLogisticClassification } from "./binary-logistic.classification";
-import { Matrix, AlgorithmPlugin } from "data-science-lab-core";
 
 
 describe('Binary Logistic Classification Tests', () => {
@@ -197,8 +196,8 @@ describe('Binary Logistic Classification Tests', () => {
             'learningRate': 0.001
         });
         algorithm.initialize();
-        const json = algorithm.export(false);
-        let newAlgorithm = (new BinaryLogisticClassification()).import(json, false);
+        const json = await algorithm.export(false);
+        let newAlgorithm = await (new BinaryLogisticClassification()).import(json, false);
         const initial = newAlgorithm.computeCost(newAlgorithm.computeH(newAlgorithm.data.input));
         for (let i = 0; i < 1000; ++i) {
             await newAlgorithm.step();
@@ -237,8 +236,8 @@ describe('Binary Logistic Classification Tests', () => {
         for (let i = 0; i < 100000; ++i) {
             await algorithm.step();
         } 
-        const json = algorithm.export(true);
-        let newAlgorithm = (new BinaryLogisticClassification()).import(json, true);
+        const json = await algorithm.export(true);
+        let newAlgorithm = await (new BinaryLogisticClassification()).import(json, true);
         for (let i = 0; i < testingInput.output.examples.length; ++i) {
             const actual = newAlgorithm.test(
                 { 'input': testingInput.input.examples[i] }

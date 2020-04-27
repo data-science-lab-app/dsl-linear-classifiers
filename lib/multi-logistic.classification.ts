@@ -38,7 +38,7 @@ export class MultiLogisticClassification extends AlgorithmPlugin {
         return this.data.n;
     }
 
-    export(minimum: boolean): string {
+    async export(minimum: boolean): Promise<string> {
         if (minimum) {
             return JSON.stringify({
                 threshold: this.data.threshold,
@@ -52,7 +52,7 @@ export class MultiLogisticClassification extends AlgorithmPlugin {
         }
     }
 
-    import(json: string, _: boolean): MultiLogisticClassification {
+    async import(json: string, _: boolean): Promise<MultiLogisticClassification> {
         const data = JSON.parse(json) as MultiLogisticClassificationInput;
         this.data = data;
         return this;

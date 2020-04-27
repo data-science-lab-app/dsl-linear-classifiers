@@ -37,7 +37,7 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
         return this.data.n;
     }
 
-    export(minimum: boolean): string {
+    async export(minimum: boolean): Promise<string> {
         if (minimum) {
             return JSON.stringify({
                 threshold: this.data.threshold,
@@ -50,7 +50,7 @@ export class BinaryLogisticClassification extends AlgorithmPlugin {
         }
     }
 
-    import(json: string, minimal: boolean): BinaryLogisticClassification {
+    async import(json: string, minimal: boolean): Promise<BinaryLogisticClassification> {
         const data = JSON.parse(json) as BinaryLogisticClassificationInput;
         if (minimal) {
             this.data.threshold = data.threshold;

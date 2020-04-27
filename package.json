@@ -20,9 +20,20 @@
     "url": "https://github.com/data-science-lab-app/dsl-linear-classifiers/issues"
   },
   "homepage": "https://github.com/data-science-lab-app/dsl-linear-classifiers#readme",
-  "data_science_lab": [],
+  "data_science_lab": [
+    {
+      "name": "Binary Logistic Classification",
+      "type": "Algorithm",
+      "classname": "BinaryLogisticClassification"
+    },
+    {
+      "name": "One-vs-All Logistic Classification",
+      "type": "Algorithm",
+      "classname": "MultiLogisticClassification"
+    }
+  ],
   "dependencies": {
-    "data-science-lab-core": "^0.0.29"
+    "data-science-lab-core": "^0.0.30"
   },
   "devDependencies": {
     "@types/node": "^12.11.1",

@@ -299,8 +299,8 @@ describe('Multi Logistic Classification Tests', () => {
         });
 
         it('export and import without minimial should be able to train', async () => {
-            const json = algorithm.export(false);
-            let newAlgorithm = (new MultiLogisticClassification()).import(json, false);
+            const json = await algorithm.export(false);
+            let newAlgorithm = await (new MultiLogisticClassification()).import(json, false);
             for (let i = 0; i < 1000; ++i) {
                 await newAlgorithm.step();
             }
@@ -316,8 +316,8 @@ describe('Multi Logistic Classification Tests', () => {
             for (let i = 0; i < 1000; ++i) {
                 await algorithm.step();
             } 
-            const json = algorithm.export(true);
-            let newAlgorithm = (new MultiLogisticClassification()).import(json, true);
+            const json = await algorithm.export(true);
+            let newAlgorithm = await (new MultiLogisticClassification()).import(json, true);
             for (let i = 0; i < testingInput.output.examples.length; ++i) {
                 const actual = newAlgorithm.test(
                     { 'input': testingInput.input.examples[i] }
