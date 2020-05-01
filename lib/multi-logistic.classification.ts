@@ -406,7 +406,7 @@ class MultiLogisticClassificationPluginOptions extends PluginOptions {
                         id: 'labels',
                         label: 'Input Label List. (example input: 1,2,3,4)',
                         min: 1,
-                        pattern: '([ ]*[0-9]+[ ]*)(,[ ]*[0-9]+[ ]*)+'
+                        pattern: '^([ ]*[0-9]+[ ]*)(,[ ]*[0-9]+[ ]*)+$'
                     })
                 ]
             default:
